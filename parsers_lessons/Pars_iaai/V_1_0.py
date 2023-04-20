@@ -54,17 +54,50 @@ headers = {
     'upgrade-insecure-requests': '1',
     'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36 Edg/112.0.1722.48',
 }
-
-response = requests.get(
-    'https://www.iaai.com/Search?url=s4AVptX2B2oPa%2b3EeI63xkeSbO%2bH4hfzVWY0SkLJkKM%3d',
+# --------- Выгрузка HTML  ---------
+url = ""
+response = requests.get(url=url,
     cookies=cookies,
     headers=headers,
 )
-with open("result.json","w") as file:
-        json.dump(response.json(),file,indent=4,ensure_ascii=False)
-# --------- Выгрузка HTML  ---------
-# with open("index.html","w") as file:
-#         file.write(response.text)
+with open("index.html","w") as file:
+        file.write(response.text)
+# --------- Выгрузка товаров в JSON  ---------
+# response = requests.get(
+#     'https://www.iaai.com/Search?c=1681927203646',
+#     cookies=cookies,
+#     headers=headers,
+# )
+# with open("result.json","w") as file:
+#         json.dump(response.json(),file,indent=4,ensure_ascii=False)
+
+import urllib.parse
+
+data = {
+    "Searches": [{
+        "Facets": [{
+            "Group": "AuctionType",
+            "Value": "Buy Now"
+        }],
+        "FullSearch": None,
+        "LongRanges": None
+    }],
+    "ZipCode": "",
+    "miles": 0,
+    "PageSize": 100,
+    "CurrentPage": 1,
+    "Sort": [{
+        "IsGeoSort": False,
+        "SortField": "AuctionDateTime",
+        "IsDescending": False
+    }],
+    "SaleStatus": 0,
+    "BidStatus": 6
+}
+
+query_string = urllib.parse.urlencode({'data': json.dumps(data)})
+url = 'https://www.iaai.com/Search?c=&{}'.format(query_string)
+print(url)
 
 
 
